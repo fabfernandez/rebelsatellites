@@ -22,11 +22,8 @@ public class MessageService {
 
         //remove message lag based on the shortest msg recieved
         msgList = removeLag(msgList, msgList.get(0).size());
-        //String message = completeMessage(msgList);
-        //String message = buildMessage(msgList);
-        String message = buildMessage(msgList);
 
-        return message;
+        return buildMessage(msgList);
     }
 
     private String buildMessage(ArrayList<ArrayList<String>> msgList) {
@@ -46,11 +43,10 @@ public class MessageService {
 
                     if (message.equals("")) {
                         message = word;
-                        break;
                     } else {
                         message = message.concat(" " + word);
-                        break;
                     }
+                    break;
                 }
             }
         }
