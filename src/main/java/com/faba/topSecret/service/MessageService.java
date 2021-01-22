@@ -21,7 +21,7 @@ public class MessageService {
         msgList.sort(Comparator.comparing(List::size));
 
         //remove message lag based on the shortest msg recieved
-        msgList = removeLag(msgList, msgList.get(0).size());
+        removeLag(msgList, msgList.get(0).size());
 
         return buildMessage(msgList);
     }
@@ -53,21 +53,7 @@ public class MessageService {
         return message;
     }
 
-    private String buildMessage1(ArrayList<ArrayList<String>> msgList) {
-
-        List<String> messageAsList = msgList.stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-
-        String message = "";
-
-        for (String element : messageAsList) {
-            message.concat(element);
-        }
-        return message;
-    }
-
-    public List<String> getMsgWords(ArrayList<ArrayList<String>> msgList) {
+    private List<String> getMsgWords(ArrayList<ArrayList<String>> msgList) {
 
         List<String> listWords = new ArrayList<String>();
         for (List<String> msg : msgList) {
@@ -79,45 +65,21 @@ public class MessageService {
         return listWords;
     }
 
-    public ArrayList<ArrayList<String>> removeLag(ArrayList<ArrayList<String>> msgList, int msgSize) {
+    private ArrayList<ArrayList<String>> removeLag(ArrayList<ArrayList<String>> msgList, int msgSize) {
         int s = 0;
         for (int i = 0; i < msgList.size(); i++) {
             s = msgList.get(i).size();
             msgList.set(i, new ArrayList<>(msgList.get(i).subList(s - msgSize, s)));
         }
         return msgList;
-
-        //msgList.stream().forEach(s -> s.subList(s.size()-lagSize, s.size()));
     }
 
-    public String completeMessage(ArrayList<ArrayList<String>> msgList) {
-
-        String phrase = "";
-        for (List<String> message : msgList) {
-
-            if (!message.isEmpty() && !message.get(0).equals("")) {
-                phrase = (message.size() == 1) ? message.get(0) : message.get(0) + " ";
-                msgList.stream().forEach(s -> s.remove(0));
-                return phrase + completeMessage(msgList);
-            }
-        }
-        //if(messages.get(0).size()>0)
-        return "";
-    }
-
-
-    public boolean validateMessagesSize(ArrayList<ArrayList<String>> messages, int size) {
+    private boolean validateMessagesSize(ArrayList<ArrayList<String>> messages, int size) {
         for (List<String> m : messages) {
             if (m.size() < size) {
                 return false;
             }
         }
         return true;
-    }
-
-    public void validateMessagePhrases(List<String> words, String message) {
-        for (String word : words) {
-            Assert.hasText(word, message);
-        }
     }
 }
