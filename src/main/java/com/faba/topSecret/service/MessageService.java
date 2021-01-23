@@ -1,7 +1,6 @@
 package com.faba.topSecret.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,26 +11,31 @@ public class MessageService {
 
     public String getMessage(ArrayList<ArrayList<String>> msgList) throws RuntimeException {
 
+        //TODO: VALIDAR QUE VENGA POR LO MENOS UN MENSAJE en msgList
+
         //obtain words that make up the message
         List<String> msgWords = getMsgWords(msgList);
         if (!validateMessagesSize(msgList, msgWords.size()))
             throw new RuntimeException("Tamaño del mensaje incorrecto");
+        //TODO: hacer una excepcion personalizada
 
         //sort msgList by size, ascending order
         msgList.sort(Comparator.comparing(List::size));
 
-        //remove message lag based on the shortest msg recieved
-        removeLag(msgList, msgList.get(0).size());
+        int msgSize = msgList.get(0).size();
 
-        return buildMessage(msgList);
+        //remove message lag based on the shortest msg recieved
+        removeLag(msgList, msgSize);
+
+        return buildMessage(msgList, msgSize);
     }
 
-    private String buildMessage(ArrayList<ArrayList<String>> msgList) {
+    private String buildMessage(ArrayList<ArrayList<String>> msgList, int msgSize) {
         //At this point we should have lists of the same size inside the nested list.
         //So each word we find is part of the original message.
         String message = "";
 
-        for (int elem = 0; elem < msgList.get(0).size(); elem++) {
+        for (int elem = 0; elem < msgSize; elem++) {
             //elem is the position on the string list.
 
             for (int list = 0; list < msgList.size(); list++) {
@@ -55,7 +59,7 @@ public class MessageService {
 
     private List<String> getMsgWords(ArrayList<ArrayList<String>> msgList) {
 
-        List<String> listWords = new ArrayList<String>();
+        List<String> listWords = new ArrayList<>();
         for (List<String> msg : msgList) {
             listWords = Stream.concat(listWords.stream(), msg.stream())
                     .distinct()
@@ -66,10 +70,9 @@ public class MessageService {
     }
 
     private ArrayList<ArrayList<String>> removeLag(ArrayList<ArrayList<String>> msgList, int msgSize) {
-        int s = 0;
         for (int i = 0; i < msgList.size(); i++) {
-            s = msgList.get(i).size();
-            msgList.set(i, new ArrayList<>(msgList.get(i).subList(s - msgSize, s)));
+            int size = msgList.get(i).size();
+            msgList.set(i, new ArrayList<>(msgList.get(i).subList(size - msgSize, size)));
         }
         return msgList;
     }

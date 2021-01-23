@@ -17,7 +17,7 @@ class MessageServiceTest {
 
     @Test
     void decipherSimpleMessage() {
-        String solution = "this is a secret message";
+        String expectedMessage = "this is a secret message";
 
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("",  //lag
@@ -35,7 +35,7 @@ class MessageServiceTest {
 
         String message = messageService.getMessage(msgList);
 
-        Assertions.assertEquals(solution, message);
+        Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
@@ -65,7 +65,7 @@ class MessageServiceTest {
 
     @Test
     void decipherOneFullMsgAndTwoEmpty() {
-        String solution = "we need to go deeper";
+        String expectedMessage = "we need to go deeper";
 
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("", "", "", "", //lag
@@ -84,12 +84,12 @@ class MessageServiceTest {
 
         String message = messageService.getMessage(msgList);
 
-        Assertions.assertEquals(solution, message);
+        Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
     void decipherOneWordOnEachMsg() {
-        String solution = "send more troopers";
+        String expectedMessage = "send more troopers";
 
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("", "", "", "", "", "",  //lag
@@ -108,12 +108,12 @@ class MessageServiceTest {
 
         String message = messageService.getMessage(msgList);
 
-        Assertions.assertEquals(solution, message);
+        Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
     void decipherWithoutAllTheWordsFails() {
-        String solution = "send more troopers";
+        String expectedMessage = "send more troopers";
 
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("", "", "", "", "", "",  //lag
@@ -132,12 +132,12 @@ class MessageServiceTest {
 
         String message = messageService.getMessage(msgList);
 
-        Assertions.assertNotEquals(solution, message);
+        Assertions.assertNotEquals(expectedMessage, message);
     }
 
     @Test
     void decipherOneEmptyMsgAndTwoIncomplete() {
-        String solution = "we are under attack";
+        String expectedMessage = "we are under attack";
 
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("", "", "", "", "", "",  //lag
@@ -156,12 +156,12 @@ class MessageServiceTest {
 
         String message = messageService.getMessage(msgList);
 
-        Assertions.assertEquals(solution, message);
+        Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
     void decipherFromFourSources() {
-        String solution = "we are under attack help";
+        String expectedMessage = "we are under attack help";
 
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("", "", "", "", "", "",  //lag
@@ -184,7 +184,7 @@ class MessageServiceTest {
 
         String message = messageService.getMessage(msgList);
 
-        Assertions.assertEquals(solution, message);
+        Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
