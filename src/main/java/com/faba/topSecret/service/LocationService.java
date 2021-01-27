@@ -36,11 +36,11 @@ public class LocationService {
 
         double a = calculateTwiceDifference(x2, x1);
         double b = calculateTwiceDifference(y2, y1);
-        double c = calculatePowersDifference(d1, d2, x1, x2, y1, y2, 2);
+        double c = calculatePowersArithmetic(d1, d2, x1, x2, y1, y2, 2);
 
         double d = calculateTwiceDifference(x3, x2);
         double e = calculateTwiceDifference(y3, y2);
-        double f = calculatePowersDifference(d2, d3, x2, x3, y2, y3, 2);
+        double f = calculatePowersArithmetic(d2, d3, x2, x3, y2, y3, 2);
 
         double coordinateX = calculateCoordinate(c, e, f, b, e, a, b, d);
         double coordinateY = calculateCoordinate(c, d, a, f, b, d, a, e);
@@ -52,7 +52,7 @@ public class LocationService {
         return 2 * a - 2 * b;
     }
 
-    private double calculatePowersDifference(double a, double b, double c, double d, double e, double f, int power) {
+    private double calculatePowersArithmetic(double a, double b, double c, double d, double e, double f, int power) {
         return Math.pow(a, power) -
                 Math.pow(b, power) -
                 Math.pow(c, power) +
@@ -63,7 +63,9 @@ public class LocationService {
 
     private double calculateCoordinate
             (double var1, double var2, double var3, double var4, double var5, double var6, double var7, double var8) {
-        return round((var1 * var2 - var3 * var4) / (var5 * var6 - var7 * var8), 10);
+        return round(
+                (var1 * var2 - var3 * var4) / (var5 * var6 - var7 * var8),
+                10);
     }
 
     private static double round(double value, int places) {
