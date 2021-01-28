@@ -1,8 +1,8 @@
-com/faba/topSecret/service/MessageService.class
-com/faba/topSecret/model/Position.class
-com/faba/topSecret/FuegoDeQuasarApplication.class
-com/faba/topSecret/model/Satellite.class
-com/faba/topSecret/model/Satellite$SatelliteBuilder.class
-com/faba/topSecret/service/LocationService.class
-com/faba/topSecret/controller/TopSecretController.class
-com/faba/topSecret/model/Position$PositionBuilder.class
+com/faba/rebelSatelliteApi/model/Satellite.class
+com/faba/rebelSatelliteApi/service/MessageService.class
+com/faba/rebelSatelliteApi/controller/TopSecretController.class
+com/faba/rebelSatelliteApi/model/Position$PositionBuilder.class
+com/faba/rebelSatelliteApi/service/LocationService.class
+com/faba/rebelSatelliteApi/FuegoDeQuasarApplication.class
+com/faba/rebelSatelliteApi/model/Position.class
+com/faba/rebelSatelliteApi/model/Satellite$SatelliteBuilder.class
