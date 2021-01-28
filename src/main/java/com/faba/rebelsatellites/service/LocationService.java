@@ -19,7 +19,6 @@ public class LocationService {
         satellites.sort(Comparator.comparingDouble(Satellite::getTargetDistance));
 
         if(satellites.size()<3) throw new NotEnoughSatellitesException();
-        //TODO: code the exception handler
 
         double d1 = satellites.get(0).getTargetDistance();
         double x1 = satellites.get(0).getLocation().getX();

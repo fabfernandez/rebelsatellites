@@ -2,11 +2,15 @@ package com.faba.rebelsatellites.controller;
 
 import com.faba.rebelsatellites.model.Location;
 import com.faba.rebelsatellites.model.Satellite;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.faba.rebelsatellites.service.LocationService;
+import com.faba.rebelsatellites.service.MessageService;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +21,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@AutoConfigureMockMvc
+@ContextConfiguration(classes = {RebelSatellitesController.class, LocationService.class, MessageService.class})
+@WebMvcTest
 class ControllerTest {
 
-    private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new RebelSatellitesController()).build();
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     void ping() throws Exception {
@@ -30,14 +37,6 @@ class ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    /*public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(
-            MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype(),
-            StandardCharsets.UTF_8
-    );*/
-
-
-    /*
     @Test
     void whenThreeSatellitesArriveThenOk() throws Exception {
         //build 3 satellites
@@ -57,19 +56,16 @@ class ControllerTest {
                 List.of("", "", "", "", "", "", "", "", "", "", "", //lag
                         "", "are", "under", "")
         );
-
         Satellite sat1 = Satellite.builder()
                 .targetDistance(200)
                 .location(Location.builder().x(100).y(-100).build())
                 .message(msg1)
                 .build();
-
         Satellite sat2 = Satellite.builder()
                 .targetDistance(400)
                 .location(Location.builder().x(500).y(100).build())
                 .message(msg2)
                 .build();
-
         Satellite sat3 = Satellite.builder()
                 .targetDistance(300 * Math.sqrt(5))
                 .location(Location.builder().x(-500).y(-200).build())
@@ -78,16 +74,19 @@ class ControllerTest {
 
         ArrayList<Satellite> satellites = new ArrayList<>(List.of(sat1, sat2, sat3));
 
-        ObjectMapper mapper = new ObjectMapper();
-        String requestJson = mapper.writeValueAsString(satellites);
+        Gson gson = new Gson();
+
+        var requestBuilder =
+                post("/topsecret")
+                        .content(gson.toJson(satellites))
+                        .contentType("application/json");
 
         //call POST /topsecret and expect location and message
-        this.mockMvc.perform(
-                post("/topsecret").content(requestJson))
+        this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.location.x", is(enemyLocation.getX())))
                 .andExpect(jsonPath("$.location.y", is(enemyLocation.getY())))
-                .andExpect(jsonPath("$.message.y", is(expectedMessage)))
+                .andExpect(jsonPath("$.message", is(expectedMessage)))
         ;
-    }*/
+    }
 }
