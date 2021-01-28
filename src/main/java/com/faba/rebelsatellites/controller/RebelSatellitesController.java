@@ -1,9 +1,9 @@
 package com.faba.rebelsatellites.controller;
 
-import com.faba.rebelsatellites.model.PositionAndMessage;
 import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
+import com.faba.rebelsatellites.view.PositionAndMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
