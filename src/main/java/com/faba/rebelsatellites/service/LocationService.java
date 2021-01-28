@@ -18,7 +18,7 @@ public class LocationService {
         //just in case we get more than 3 satellites, lets sort by target distance.
         satellites.sort(Comparator.comparingDouble(Satellite::getTargetDistance));
 
-        if(satellites.size()<3) throw new NotEnoughSatellitesException();
+        if(satellites.size()<3) throw new NotEnoughSatellitesException("Not enough satellites recieved. Minimum is 3.");
 
         double d1 = satellites.get(0).getTargetDistance();
         double x1 = satellites.get(0).getLocation().getX();

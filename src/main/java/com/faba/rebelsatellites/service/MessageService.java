@@ -1,7 +1,7 @@
 package com.faba.rebelsatellites.service;
 
-import com.faba.rebelSatelliteApi.exceptions.EmptyMessagesException;
-import com.faba.rebelSatelliteApi.exceptions.NotEnoughWordsToDecipherMessageException;
+import com.faba.rebelsatellites.exceptions.EmptyMessagesException;
+import com.faba.rebelsatellites.exceptions.NotEnoughWordsToDecipherMessageException;
 import com.faba.rebelsatellites.model.Satellite;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,10 @@ public class MessageService {
                 satellites.stream().map(Satellite::getMessage)
                         .collect(toCollection(ArrayList::new));
 
-        validateMessagesNotEmpty(msgList);
+        if (messagesAreEmpty(msgList)) {
+            throw new EmptyMessagesException("All messages recieved from the satellites are empty.");
+            //TODO TEST THIS
+        }
         //obtain words that make up the message
         List<String> msgWords = getMsgWords(msgList);
         validateMessagesSize(msgList, msgWords.size());
@@ -83,21 +86,18 @@ public class MessageService {
     private void validateMessagesSize(ArrayList<ArrayList<String>> messages, int size) {
         for (List<String> message : messages) {
             if (message.size() < size) {
-                throw new NotEnoughWordsToDecipherMessageException();
+                throw new NotEnoughWordsToDecipherMessageException("There isn't enough information in the satellites to dechiper the message");
+                //TODO TEST THIS
             }
-        }
-    }
-
-    private void validateMessagesNotEmpty(ArrayList<ArrayList<String>> messages) {
-        if (messagesAreEmpty(messages)) {
-            throw new EmptyMessagesException();
         }
     }
 
     private boolean messagesAreEmpty(ArrayList<ArrayList<String>> messages) {
         for (List<String> message : messages) {
-            if (!message.isEmpty()) {
-                return false;
+            for (String word : message) {
+                if (!word.isEmpty()) {
+                    return false;
+                }
             }
         }
         return true;
