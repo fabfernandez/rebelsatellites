@@ -2,7 +2,7 @@ package com.faba.rebelsatellites.service;
 
 import com.faba.rebelsatellites.exceptions.NotEnoughSatellitesException;
 import com.faba.rebelsatellites.model.Satellite;
-import com.faba.rebelsatellites.model.Position;
+import com.faba.rebelsatellites.model.Location;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,7 +13,7 @@ import java.util.Comparator;
 @Service
 public class LocationService {
 
-    public Position getLocation(ArrayList<Satellite> satellites) {
+    public Location getLocation(ArrayList<Satellite> satellites) {
 
         //just in case we get more than 3 satellites, lets sort by target distance.
         satellites.sort(Comparator.comparingDouble(Satellite::getTargetDistance));
@@ -22,16 +22,16 @@ public class LocationService {
         //TODO: code the exception handler
 
         double d1 = satellites.get(0).getTargetDistance();
-        double x1 = satellites.get(0).getPosition().getX();
-        double y1 = satellites.get(0).getPosition().getY();
+        double x1 = satellites.get(0).getLocation().getX();
+        double y1 = satellites.get(0).getLocation().getY();
 
         double d2 = satellites.get(1).getTargetDistance();
-        double x2 = satellites.get(1).getPosition().getX();
-        double y2 = satellites.get(1).getPosition().getY();
+        double x2 = satellites.get(1).getLocation().getX();
+        double y2 = satellites.get(1).getLocation().getY();
 
         double d3 = satellites.get(2).getTargetDistance();
-        double x3 = satellites.get(2).getPosition().getX();
-        double y3 = satellites.get(2).getPosition().getY();
+        double x3 = satellites.get(2).getLocation().getX();
+        double y3 = satellites.get(2).getLocation().getY();
 
         //NOTE: this is the algorithm used here https://www.101computing.net/cell-phone-trilateration-algorithm/
 
@@ -46,7 +46,7 @@ public class LocationService {
         double coordinateX = calculateCoordinate(c, e, f, b, e, a, b, d);
         double coordinateY = calculateCoordinate(c, d, a, f, b, d, a, e);
 
-        return Position.builder().x(coordinateX).y(coordinateY).build();
+        return Location.builder().x(coordinateX).y(coordinateY).build();
     }
 
     private double calculateTwiceDifference(double a, double b) {

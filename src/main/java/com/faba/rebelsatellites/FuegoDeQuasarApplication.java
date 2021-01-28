@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("com.faba.rebelsatellites.service")
 public class FuegoDeQuasarApplication {
 
 	public static void main(String[] args) {

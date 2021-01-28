@@ -1,6 +1,10 @@
-/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelSatelliteApi/model/Position.java
-/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelSatelliteApi/model/Satellite.java
-/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelSatelliteApi/service/MessageService.java
-/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelSatelliteApi/controller/TopSecretController.java
-/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelSatelliteApi/service/LocationService.java
-/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelSatelliteApi/FuegoDeQuasarApplication.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelsatellites/view/LocationAndMessage.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelSatelliteApi/exceptions/NotEnoughWordsToDecipherMessageException.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelsatellites/service/MessageService.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelsatellites/controller/RebelSatellitesController.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelSatelliteApi/exceptions/EmptyMessagesException.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelsatellites/model/Satellite.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelsatellites/model/Location.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelsatellites/service/LocationService.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelsatellites/FuegoDeQuasarApplication.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/main/java/com/faba/rebelsatellites/exceptions/NotEnoughSatellitesException.java

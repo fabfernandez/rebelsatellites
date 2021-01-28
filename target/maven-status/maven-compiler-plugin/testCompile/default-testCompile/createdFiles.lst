@@ -1,2 +1,3 @@
-com/faba/rebelSatelliteApi/LocationServiceTest.class
-com/faba/rebelSatelliteApi/MessageServiceTest.class
+com/faba/rebelsatellites/service/MessageServiceTest.class
+com/faba/rebelsatellites/service/LocationServiceTest.class
+com/faba/rebelsatellites/controller/ControllerTest.class

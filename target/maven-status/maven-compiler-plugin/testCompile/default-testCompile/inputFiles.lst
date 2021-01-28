@@ -1,2 +1,3 @@
-/home/faba/Proyectos/Fuego_de_Quasar/src/test/java/com/faba/rebelSatelliteApi/MessageServiceTest.java
-/home/faba/Proyectos/Fuego_de_Quasar/src/test/java/com/faba/rebelSatelliteApi/LocationServiceTest.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/test/java/com/faba/rebelsatellites/service/LocationServiceTest.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/test/java/com/faba/rebelsatellites/controller/ControllerTest.java
+/home/faba/Proyectos/Fuego_de_Quasar/src/test/java/com/faba/rebelsatellites/service/MessageServiceTest.java
