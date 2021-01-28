@@ -8,5 +8,5 @@ import java.util.ArrayList;
 @Builder
 public class PositionAndMessage {
     Position position;
-    ArrayList<String> capturedMessage;
+    String message;
 }

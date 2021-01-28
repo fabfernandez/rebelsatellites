@@ -4,6 +4,7 @@ import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
 import com.faba.rebelsatellites.view.PositionAndMessage;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +14,8 @@ import java.util.ArrayList;
 
 @RestController
 public class RebelSatellitesController {
-    private LocationService locationService;
-    private MessageService messageService;
+    private final LocationService locationService;
+    private final MessageService messageService;
 
     public RebelSatellitesController(LocationService locationService, MessageService messageService) {
         this.locationService = locationService;
@@ -28,10 +29,10 @@ public class RebelSatellitesController {
 
     @PostMapping("/topsecret")
     public PositionAndMessage secretTransmission(@RequestBody ArrayList<Satellite> satellites){
-        //get the satellites location
-        locationService.getLocation(satellites);
-        //get the message
-        messageService.getMessage(satellites);
-        return PositionAndMessage.builder().build();
+
+        return PositionAndMessage.builder()
+                .position(locationService.getLocation(satellites))
+                .message(messageService.getMessage(satellites))
+                .build();
     }
 }
