@@ -6,27 +6,29 @@ import com.faba.rebelsatellites.service.MessageService;
 import com.faba.rebelsatellites.view.LocationAndMessage;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
 @RestController
 @NoArgsConstructor
 public class RebelSatellitesController {
-    @Autowired
     private LocationService locationService;
-    @Autowired
     private MessageService messageService;
 
+    public RebelSatellitesController(LocationService locationService, MessageService messageService) {
+        this.locationService = locationService;
+        this.messageService = messageService;
+    }
+
     @GetMapping("/")
-    public String ping(){
+    public String ping() {
         return "pong";
     }
 
-    @PostMapping("/topsecret")
+    @PostMapping(value = "/topsecret", produces = "application/json")
     public LocationAndMessage secretTransmission(@RequestBody ArrayList<Satellite> satellites){
 
         return LocationAndMessage.builder()

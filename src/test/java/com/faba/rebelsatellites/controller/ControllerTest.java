@@ -1,11 +1,15 @@
 package com.faba.rebelsatellites.controller;
 
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
+import com.faba.rebelsatellites.model.Location;
+import com.faba.rebelsatellites.model.Satellite;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ControllerTest {
 
     private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new RebelSatellitesController()).build();
-    
+
     @Test
     void ping() throws Exception {
 
@@ -33,8 +37,8 @@ class ControllerTest {
     );*/
 
 
-
-    /*@Test
+    /*
+    @Test
     void whenThreeSatellitesArriveThenOk() throws Exception {
         //build 3 satellites
         Location enemyLocation = Location.builder().x(100).y(100).build();
