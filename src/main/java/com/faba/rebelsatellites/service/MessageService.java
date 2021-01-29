@@ -26,16 +26,37 @@ public class MessageService {
         }
         //obtain words that make up the message
         List<String> msgWords = getMsgWords(msgList);
-        validateMessagesSize(msgList, msgWords.size());
+
         //sort msgList by size, ascending order
         msgList.sort(Comparator.comparing(List::size));
-
-        int msgSize = msgList.get(0).size();
         //remove message lag based on the shortest msg recieved
+        //int msgSize = msgList.get(0).size();
+        int msgSize = getShortestMessageSizeWithoutLag(msgList);
         removeLag(msgList, msgSize);
 
-        return buildMessage(msgList, msgSize);
+        validateMessageCanBeDeciphered(msgList, msgWords.size());
+
+        String decipheredMessage = buildMessage(msgList, msgSize);
+
+        String[] words = decipheredMessage.split("\\s+"); //split in every space
+        if (words.length != msgSize) throw new NotEnoughWordsToDecipherMessageException
+                ("There isn't enough information in the satellites to dechiper the message");
+
+        return decipheredMessage;
     }
+
+    private int getShortestMessageSizeWithoutLag(ArrayList<ArrayList<String>> msgList) {
+        for (ArrayList<String> message : msgList) {
+            for (int i = 0, messageSize = message.size(); i < messageSize; i++) {
+                String word = message.get(i);
+                if (!word.equals("")) {
+                    return message.size();
+                }
+            }
+        }
+        return 0;
+    }
+
 
     private String buildMessage(ArrayList<ArrayList<String>> msgList, int msgSize) {
         //At this point we should have lists of the same size inside the nested list.
@@ -75,18 +96,18 @@ public class MessageService {
         return listWords;
     }
 
-    private ArrayList<ArrayList<String>> removeLag(ArrayList<ArrayList<String>> msgList, int msgSize) {
+    private void removeLag(ArrayList<ArrayList<String>> msgList, int msgSize) {
         for (int i = 0; i < msgList.size(); i++) {
             int size = msgList.get(i).size();
             msgList.set(i, new ArrayList<>(msgList.get(i).subList(size - msgSize, size)));
         }
-        return msgList;
     }
 
-    private void validateMessagesSize(ArrayList<ArrayList<String>> messages, int size) {
+    private void validateMessageCanBeDeciphered(ArrayList<ArrayList<String>> messages, int quantityOfWords) {
         for (List<String> message : messages) {
-            if (message.size() < size) {
-                throw new NotEnoughWordsToDecipherMessageException("There isn't enough information in the satellites to dechiper the message");
+            if (message.size() < quantityOfWords) {
+                throw new NotEnoughWordsToDecipherMessageException
+                        ("There isn't enough information in the satellites to dechiper the message");
                 //TODO TEST THIS
             }
         }

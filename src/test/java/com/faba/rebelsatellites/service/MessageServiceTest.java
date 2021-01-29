@@ -152,9 +152,9 @@ class MessageServiceTest {
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build()));
 
-        String message = messageService.getMessage(satellites);
-
-        Assertions.assertNotEquals(expectedMessage, message);
+        assertThrows(NotEnoughWordsToDecipherMessageException.class, () -> {
+            messageService.getMessage(satellites);
+        });
     }
 
     @Test
