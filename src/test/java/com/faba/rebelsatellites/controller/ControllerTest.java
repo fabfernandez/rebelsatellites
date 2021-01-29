@@ -4,6 +4,7 @@ import com.faba.rebelsatellites.model.Location;
 import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ class ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private LocationService locationService;
 
     @Test
     void ping() throws Exception {
@@ -57,20 +61,22 @@ class ControllerTest {
                         "", "are", "under", "")
         );
         Satellite sat1 = Satellite.builder()
-                .targetDistance(200)
-                .location(Location.builder().x(100).y(-100).build())
+                .name("kenobi")
                 .message(msg1)
                 .build();
+        sat1.setTargetDistance(locationService.calculateDistance(sat1, enemyLocation));
+
         Satellite sat2 = Satellite.builder()
-                .targetDistance(400)
-                .location(Location.builder().x(500).y(100).build())
+                .name("sato")
                 .message(msg2)
                 .build();
+        sat2.setTargetDistance(locationService.calculateDistance(sat2, enemyLocation));
+
         Satellite sat3 = Satellite.builder()
-                .targetDistance(300 * Math.sqrt(5))
-                .location(Location.builder().x(-500).y(-200).build())
+                .name("skywalker")
                 .message(msg3)
                 .build();
+        sat3.setTargetDistance(locationService.calculateDistance(sat3, enemyLocation));
 
         ArrayList<Satellite> satellites = new ArrayList<>(List.of(sat1, sat2, sat3));
 

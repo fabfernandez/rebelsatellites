@@ -1,51 +1,73 @@
 package com.faba.rebelsatellites.service;
 
 import com.faba.rebelsatellites.exceptions.NotEnoughSatellitesException;
+import com.faba.rebelsatellites.exceptions.UnknownSatelliteException;
 import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.model.Location;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 
 @Service
 public class LocationService {
 
+    private static final Map<String, Location> satellitesLocations = Map.of(
+            "kenobi", new Location(-500, -200),
+            "skywalker", new Location(100, -100),
+            "sato", new Location(500, 100)
+    );
+
     public Location getLocation(ArrayList<Satellite> satellites) {
 
         //just in case we get more than 3 satellites, lets sort by target distance.
-        satellites.sort(Comparator.comparingDouble(Satellite::getTargetDistance));
+        //satellites.sort(Comparator.comparingDouble(Satellite::getTargetDistance));
 
-        if(satellites.size()<3) throw new NotEnoughSatellitesException("Not enough satellites recieved. Minimum is 3.");
+        if (satellites.size() < 3)
+            throw new NotEnoughSatellitesException("Not enough satellites recieved. Minimum is 3.");
 
-        double d1 = satellites.get(0).getTargetDistance();
-        double x1 = satellites.get(0).getLocation().getX();
-        double y1 = satellites.get(0).getLocation().getY();
+        Satellite sat0 = satellites.get(0);
+        double d0 = sat0.getTargetDistance();
+        Location location0 = getLocationByName(sat0.getName());
+        double x0 = location0.getX();
+        double y0 = location0.getY();
 
-        double d2 = satellites.get(1).getTargetDistance();
-        double x2 = satellites.get(1).getLocation().getX();
-        double y2 = satellites.get(1).getLocation().getY();
+        Satellite sat1 = satellites.get(1);
+        double d1 = sat1.getTargetDistance();
+        Location location1 = getLocationByName(sat1.getName());
+        double x1 = location1.getX();
+        double y1 = location1.getY();
 
-        double d3 = satellites.get(2).getTargetDistance();
-        double x3 = satellites.get(2).getLocation().getX();
-        double y3 = satellites.get(2).getLocation().getY();
+        Satellite sat2 = satellites.get(2);
+        double d2 = sat2.getTargetDistance();
+        Location location2 = getLocationByName(sat2.getName());
+        double x2 = location2.getX();
+        double y2 = location2.getY();
 
         //NOTE: this is the algorithm used here https://www.101computing.net/cell-phone-trilateration-algorithm/
 
-        double a = calculateTwiceDifference(x2, x1);
-        double b = calculateTwiceDifference(y2, y1);
-        double c = calculatePowersArithmetic(d1, d2, x1, x2, y1, y2, 2);
+        double a = calculateTwiceDifference(x1, x0);
+        double b = calculateTwiceDifference(y1, y0);
+        double c = calculatePowersArithmetic(d0, d1, x0, x1, y0, y1, 2);
 
-        double d = calculateTwiceDifference(x3, x2);
-        double e = calculateTwiceDifference(y3, y2);
-        double f = calculatePowersArithmetic(d2, d3, x2, x3, y2, y3, 2);
+        double d = calculateTwiceDifference(x2, x1);
+        double e = calculateTwiceDifference(y2, y1);
+        double f = calculatePowersArithmetic(d1, d2, x1, x2, y1, y2, 2);
 
         double coordinateX = calculateCoordinate(c, e, f, b, e, a, b, d);
         double coordinateY = calculateCoordinate(c, d, a, f, b, d, a, e);
 
         return Location.builder().x(coordinateX).y(coordinateY).build();
+    }
+
+    private Location getLocationByName(String name) {
+        String key = name.toLowerCase(Locale.ROOT);
+        if (!satellitesLocations.containsKey(key)) {
+            throw new UnknownSatelliteException(String.format("Satellite %s not found", key));
+        }
+
+        return satellitesLocations.get(key);
     }
 
     private double calculateTwiceDifference(double a, double b) {
@@ -74,5 +96,12 @@ public class LocationService {
         BigDecimal bigDecimal = BigDecimal.valueOf(value);
         bigDecimal = bigDecimal.setScale(places, RoundingMode.HALF_UP);
         return bigDecimal.doubleValue();
+    }
+
+    public double calculateDistance(Satellite satellite, Location enemyLocation) {
+        double distanceOnX = getLocationByName(satellite.getName()).getX() - enemyLocation.getX();
+        double distanceOnY = getLocationByName(satellite.getName()).getY() - enemyLocation.getY();
+        //Pythagorean theorem
+        return Math.sqrt(Math.pow(distanceOnX, 2) + Math.pow(distanceOnY, 2));
     }
 }

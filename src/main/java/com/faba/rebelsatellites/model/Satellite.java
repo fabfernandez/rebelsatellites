@@ -10,7 +10,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Satellite {
-    Location location;
+    String name;
     double targetDistance;
     ArrayList<String> message;
 }
