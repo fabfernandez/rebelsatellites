@@ -89,8 +89,8 @@ class ControllerTest {
 
         this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.location.x", is(enemyLocation.getX())))
-                .andExpect(jsonPath("$.location.y", is(enemyLocation.getY())))
+                .andExpect(jsonPath("$.position.x", is(enemyLocation.getX())))
+                .andExpect(jsonPath("$.position.y", is(enemyLocation.getY())))
                 .andExpect(jsonPath("$.message", is(expectedMessage)))
         ;
     }

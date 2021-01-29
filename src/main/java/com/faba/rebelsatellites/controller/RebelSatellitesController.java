@@ -2,7 +2,7 @@ package com.faba.rebelsatellites.controller;
 
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
-import com.faba.rebelsatellites.view.LocationAndMessageResponse;
+import com.faba.rebelsatellites.view.PositionAndMessageResponse;
 import com.faba.rebelsatellites.view.SatellitesRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +21,14 @@ public class RebelSatellitesController {
 
     @GetMapping("/")
     public String ping() {
-        return "pong";
+        return "Pong! API is up and running.";
     }
 
     @PostMapping(value = "/topsecret", produces = "application/json")
-    public LocationAndMessageResponse secretTransmission(@RequestBody SatellitesRequest satellitesRequest) {
+    public PositionAndMessageResponse secretTransmission(@RequestBody SatellitesRequest satellitesRequest) {
 
-        return LocationAndMessageResponse.builder()
-                .location(locationService.getLocation(satellitesRequest.getSatellites()))
+        return PositionAndMessageResponse.builder()
+                .position(locationService.getLocation(satellitesRequest.getSatellites()))
                 .message(messageService.getMessage(satellitesRequest.getSatellites()))
                 .build();
     }
