@@ -1,4 +1,4 @@
-package com.faba.rebelsatellites.model;
+package com.faba.rebelsatellites.view;
 
 import lombok.*;
 
@@ -9,8 +9,7 @@ import java.util.ArrayList;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Satellite {
-    private String name;
-    private double targetDistance;
+public class DistanceAndMessageRequest {
+    private double distance;
     private ArrayList<String> message;
 }

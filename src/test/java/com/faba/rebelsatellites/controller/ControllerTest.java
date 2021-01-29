@@ -4,6 +4,7 @@ import com.faba.rebelsatellites.model.Location;
 import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
+import com.faba.rebelsatellites.view.DistanceAndMessageRequest;
 import com.faba.rebelsatellites.view.SatellitesRequest;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
@@ -93,5 +94,32 @@ class ControllerTest {
                 .andExpect(jsonPath("$.position.y", is(enemyLocation.getY())))
                 .andExpect(jsonPath("$.message", is(expectedMessage)))
         ;
+    }
+
+    @Test
+    void oneSatellitePost() throws Exception {
+        Location enemyLocation = Location.builder().x(100).y(100).build();
+
+        ArrayList<String> msg1 = new ArrayList<>(
+                List.of("", "", "", "", "", "",  //lag
+                        "we", "", "", "attack")
+        );
+        Satellite sat1 = Satellite.builder()
+                .name("kenobi")
+                .build();
+
+        DistanceAndMessageRequest distanceAndMessageRequest = DistanceAndMessageRequest.builder()
+                .distance(locationService.calculateDistance(sat1, enemyLocation))
+                .message(msg1)
+                .build();
+
+        Gson gson = new Gson();
+        var requestBuilder =
+                post("/topsecret_split/" + sat1.getName())
+                        .content(gson.toJson(distanceAndMessageRequest))
+                        .contentType("application/json");
+
+        this.mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk());
     }
 }

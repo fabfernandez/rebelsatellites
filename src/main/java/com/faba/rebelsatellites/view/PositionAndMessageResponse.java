@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class PositionAndMessageResponse {
-    Location position;
-    String message;
+    private Location position;
+    private String message;
 }

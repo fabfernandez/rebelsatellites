@@ -6,6 +6,6 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 public class Location {
-    double x;
-    double y;
+    private double x;
+    private double y;
 }

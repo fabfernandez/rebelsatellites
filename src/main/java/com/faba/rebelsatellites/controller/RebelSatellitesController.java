@@ -2,6 +2,7 @@ package com.faba.rebelsatellites.controller;
 
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
+import com.faba.rebelsatellites.view.DistanceAndMessageRequest;
 import com.faba.rebelsatellites.view.PositionAndMessageResponse;
 import com.faba.rebelsatellites.view.SatellitesRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,19 @@ public class RebelSatellitesController {
     }
 
     @PostMapping(value = "/topsecret", produces = "application/json")
-    public PositionAndMessageResponse secretTransmission(@RequestBody SatellitesRequest satellitesRequest) {
+    public PositionAndMessageResponse topSecretPost(@RequestBody SatellitesRequest satellitesRequest) {
 
         return PositionAndMessageResponse.builder()
                 .position(locationService.getLocation(satellitesRequest.getSatellites()))
                 .message(messageService.getMessage(satellitesRequest.getSatellites()))
                 .build();
+    }
+
+    @PostMapping(value = "/topsecret_split/{satelliteName}")
+    public String topSecretSplitPost(
+            @RequestBody DistanceAndMessageRequest distanceAndMessageRequest,
+            @PathVariable String satelliteName) {
+
+        return "OK ".concat(satelliteName).concat(" recieved.");
     }
 }
