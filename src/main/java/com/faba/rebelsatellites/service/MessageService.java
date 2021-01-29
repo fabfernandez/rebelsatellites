@@ -16,28 +16,27 @@ public class MessageService {
 
     public String getMessage(ArrayList<Satellite> satellites) {
 
-        ArrayList<ArrayList<String>> msgList =
+        ArrayList<ArrayList<String>> messages =
                 satellites.stream().map(Satellite::getMessage)
                         .collect(toCollection(ArrayList::new));
 
-        if (messagesAreEmpty(msgList)) {
+        if (messagesAreEmpty(messages)) {
             throw new EmptyMessagesException("All messages recieved from the satellites are empty.");
-            //TODO TEST THIS
         }
         //obtain words that make up the message
-        List<String> msgWords = getMsgWords(msgList);
-        validateMessagesSize(msgList, msgWords.size());
-        //sort msgList by size, ascending order
-        msgList.sort(Comparator.comparing(List::size));
+        List<String> msgWords = getMsgWords(messages);
+        validateMessagesSize(messages, msgWords.size());
+        //sort messages by size, ascending order
+        messages.sort(Comparator.comparing(List::size));
 
-        int msgSize = msgList.get(0).size();
+        int msgSize = messages.get(0).size();
         //remove message lag based on the shortest msg recieved
-        removeLag(msgList, msgSize);
+        removeLag(messages, msgSize);
 
-        return buildMessage(msgList, msgSize);
+        return buildMessage(messages, msgSize);
     }
 
-    private String buildMessage(ArrayList<ArrayList<String>> msgList, int msgSize) {
+    private String buildMessage(ArrayList<ArrayList<String>> messages, int msgSize) {
         //At this point we should have lists of the same size inside the nested list.
         //So each word we find is part of the original message.
         String message = "";
@@ -45,10 +44,10 @@ public class MessageService {
         for (int elem = 0; elem < msgSize; elem++) {
             //elem is the position on the string list.
 
-            for (int list = 0; list < msgList.size(); list++) {
+            for (int list = 0; list < messages.size(); list++) {
                 //list is the index of the list inside the nested list.
 
-                String word = msgList.get(list).get(elem);
+                String word = messages.get(list).get(elem);
 
                 if (!word.equals("")) {
                     if (message.equals("")) {
@@ -63,10 +62,10 @@ public class MessageService {
         return message;
     }
 
-    private List<String> getMsgWords(ArrayList<ArrayList<String>> msgList) {
+    private List<String> getMsgWords(ArrayList<ArrayList<String>> messages) {
 
         List<String> listWords = new ArrayList<>();
-        for (List<String> msg : msgList) {
+        for (List<String> msg : messages) {
             listWords = Stream.concat(listWords.stream(), msg.stream())
                     .distinct()
                     .collect(Collectors.toList());
@@ -75,19 +74,18 @@ public class MessageService {
         return listWords;
     }
 
-    private ArrayList<ArrayList<String>> removeLag(ArrayList<ArrayList<String>> msgList, int msgSize) {
-        for (int i = 0; i < msgList.size(); i++) {
-            int size = msgList.get(i).size();
-            msgList.set(i, new ArrayList<>(msgList.get(i).subList(size - msgSize, size)));
+    private void removeLag(ArrayList<ArrayList<String>> messages, int msgSize) {
+        for (int i = 0; i < messages.size(); i++) {
+            int size = messages.get(i).size();
+            messages.set(i, new ArrayList<>(messages.get(i).subList(size - msgSize, size)));
         }
-        return msgList;
     }
 
-    private void validateMessagesSize(ArrayList<ArrayList<String>> messages, int size) {
+    private void validateMessagesSize(ArrayList<ArrayList<String>> messages, int wordCount) {
         for (List<String> message : messages) {
-            if (message.size() < size) {
-                throw new NotEnoughWordsToDecipherMessageException("There isn't enough information in the satellites to dechiper the message");
-                //TODO TEST THIS
+            if (message.size() < wordCount) {
+                throw new NotEnoughWordsToDecipherMessageException
+                        ("There isn't enough information in the satellites to dechiper the message");
             }
         }
     }

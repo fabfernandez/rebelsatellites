@@ -1,6 +1,7 @@
 package com.faba.rebelsatellites.service;
 
 import com.faba.rebelsatellites.exceptions.NotEnoughSatellitesException;
+import com.faba.rebelsatellites.exceptions.UnknownSatelliteException;
 import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.model.Location;
 import org.junit.jupiter.api.Assertions;
@@ -29,9 +30,17 @@ class LocationServiceTest {
         Satellite sat2 = Satellite.builder().build();
         ArrayList<Satellite> satellites = new ArrayList<>(List.of(sat1, sat2));
 
-        assertThrows(NotEnoughSatellitesException.class, () -> {
-            locationService.getLocation(satellites);
-        });
+        assertThrows(NotEnoughSatellitesException.class, () -> locationService.getLocation(satellites));
+    }
+
+    @Test
+    void whenAnUnknownSatelliteIsReceivedThenExceptionIsThrown() {
+        Satellite sat1 = Satellite.builder().name("kenobi").build();
+        Satellite sat2 = Satellite.builder().name("darth vader").build();
+        Satellite sat3 = Satellite.builder().name("sato").build();
+        ArrayList<Satellite> satellites = new ArrayList<>(List.of(sat1, sat2, sat3));
+
+        assertThrows(UnknownSatelliteException.class, () -> locationService.getLocation(satellites));
     }
 
     @Test
