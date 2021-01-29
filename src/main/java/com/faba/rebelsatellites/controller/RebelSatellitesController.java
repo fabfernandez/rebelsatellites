@@ -39,8 +39,8 @@ public class RebelSatellitesController {
             @RequestBody DistanceAndMessageRequest distanceAndMessageRequest,
             @PathVariable String satelliteName) {
 
-        //send distance and name to locationService
-        //send message and name? to messageService
+        locationService.putSplitDistance(satelliteName, distanceAndMessageRequest.getDistance());
+        messageService.putSplitMessage(satelliteName, distanceAndMessageRequest.getMessage());
 
         return "OK ".concat(satelliteName).concat(" recieved.");
     }
@@ -48,7 +48,7 @@ public class RebelSatellitesController {
     @GetMapping(value = "/topsecret_split", produces = "application/json")
     public PositionAndMessageResponse topSecretSplitGet() {
         return PositionAndMessageResponse.builder()
-                //.position(locationService.getBufferedLocation())
+                .position(locationService.getBufferedLocation())
                 //.message(messageService.getBufferedMessage())
                 .build();
     }

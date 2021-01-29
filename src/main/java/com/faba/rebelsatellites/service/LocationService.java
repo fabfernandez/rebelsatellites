@@ -1,9 +1,13 @@
 package com.faba.rebelsatellites.service;
 
+import com.faba.rebelsatellites.exceptions.NotEnoughDataException;
 import com.faba.rebelsatellites.exceptions.NotEnoughSatellitesException;
 import com.faba.rebelsatellites.exceptions.UnknownSatelliteException;
 import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.model.Location;
+import com.faba.rebelsatellites.enumerable.SatelliteNames;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -12,17 +16,25 @@ import java.util.*;
 
 @Service
 public class LocationService {
+    private static final String KENOBI = SatelliteNames.kenobi.name();
+    private static final String SKYWALKER = SatelliteNames.skywalker.name();
+    private static final String SATO = SatelliteNames.sato.name();
 
-    private static final Map<String, Location> satellitesLocations = Map.of(
-            "kenobi", new Location(-500, -200),
-            "skywalker", new Location(100, -100),
-            "sato", new Location(500, 100)
+    private static final Map<String, Location> locationDictionary = Map.of(
+            KENOBI, new Location(-500, -200),
+            SKYWALKER, new Location(100, -100),
+            SATO, new Location(500, 100)
     );
 
-    public Location getLocation(ArrayList<Satellite> satellites) {
+    private HashMap<String, Double> distanceDictionary =
+            Maps.newHashMap(ImmutableMap.of(
+                    KENOBI, Double.NaN,
+                    SKYWALKER, Double.NaN,
+                    SATO, Double.NaN
+                    )
+            );
 
-        //just in case we get more than 3 satellites, lets sort by target distance.
-        //satellites.sort(Comparator.comparingDouble(Satellite::getTargetDistance));
+    public Location getLocation(ArrayList<Satellite> satellites) {
 
         if (satellites.size() < 3)
             throw new NotEnoughSatellitesException("Not enough satellites recieved. Minimum is 3.");
@@ -61,13 +73,43 @@ public class LocationService {
         return Location.builder().x(coordinateX).y(coordinateY).build();
     }
 
+    public double calculateDistance(Satellite satellite, Location enemyLocation) {
+        double distanceOnX = getLocationByName(satellite.getName()).getX() - enemyLocation.getX();
+        double distanceOnY = getLocationByName(satellite.getName()).getY() - enemyLocation.getY();
+        //Pythagorean theorem
+        return Math.sqrt(Math.pow(distanceOnX, 2) + Math.pow(distanceOnY, 2));
+    }
+
+    public void putSplitDistance(String name, Double distance) {
+        distanceDictionary.put(name, distance);
+    }
+
+    public Location getBufferedLocation() {
+        if (distanceDictionary.containsValue(Double.NaN)) {
+            throw new NotEnoughDataException("Not enough data to get the information");
+        }
+
+        Satellite sat1 = Satellite.builder()
+                .name(KENOBI)
+                .targetDistance(distanceDictionary.get(KENOBI)).build();
+        Satellite sat2 = Satellite.builder()
+                .name(SKYWALKER)
+                .targetDistance(distanceDictionary.get(SKYWALKER)).build();
+        Satellite sat3 = Satellite.builder()
+                .name(SATO)
+                .targetDistance(distanceDictionary.get(SATO)).build();
+        ArrayList<Satellite> satellites = new ArrayList<>(List.of(sat1, sat2, sat3));
+
+        return getLocation(satellites);
+    }
+
     private Location getLocationByName(String name) {
         String key = name.toLowerCase(Locale.ROOT);
-        if (!satellitesLocations.containsKey(key)) {
+        if (!locationDictionary.containsKey(key)) {
             throw new UnknownSatelliteException(String.format("Satellite %s not found", key));
         }
 
-        return satellitesLocations.get(key);
+        return locationDictionary.get(key);
     }
 
     private double calculateTwiceDifference(double a, double b) {
@@ -98,10 +140,5 @@ public class LocationService {
         return bigDecimal.doubleValue();
     }
 
-    public double calculateDistance(Satellite satellite, Location enemyLocation) {
-        double distanceOnX = getLocationByName(satellite.getName()).getX() - enemyLocation.getX();
-        double distanceOnY = getLocationByName(satellite.getName()).getY() - enemyLocation.getY();
-        //Pythagorean theorem
-        return Math.sqrt(Math.pow(distanceOnX, 2) + Math.pow(distanceOnY, 2));
-    }
+
 }
