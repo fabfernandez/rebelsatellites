@@ -97,7 +97,7 @@ class ControllerTest {
     }
 
     @Test
-    void oneSatellitePost() throws Exception {
+    void oneSatellitePosts() throws Exception {
         Location enemyLocation = Location.builder().x(100).y(100).build();
 
         ArrayList<String> msg1 = new ArrayList<>(
@@ -122,4 +122,76 @@ class ControllerTest {
         this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void threeSatellitesPostThenGet() throws Exception {
+        //Given
+        Location enemyLocation = Location.builder().x(100).y(100).build();
+        String expectedMessage = "we are under attack";
+
+        //When
+        ArrayList<String> msg1 = new ArrayList<>(
+                List.of("", "", "", "", "", "", "we", "", "", "attack"));
+        ArrayList<String> msg2 = new ArrayList<>(
+                List.of("", "", "", "", "", "", ""));
+        ArrayList<String> msg3 = new ArrayList<>(
+                List.of("", "", "", "", "", "", "", "", "", "", "", "", "are", "under", ""));
+
+        Satellite sat1 = Satellite.builder().name("kenobi").build();
+        Satellite sat2 = Satellite.builder().name("sato").build();
+        Satellite sat3 = Satellite.builder().name("skywalker").build();
+
+        DistanceAndMessageRequest distanceAndMessageRequest1 = DistanceAndMessageRequest.builder()
+                .distance(locationService.calculateDistance(sat1, enemyLocation))
+                .message(msg1)
+                .build();
+
+        DistanceAndMessageRequest distanceAndMessageRequest2 = DistanceAndMessageRequest.builder()
+                .distance(locationService.calculateDistance(sat2, enemyLocation))
+                .message(msg2)
+                .build();
+
+        DistanceAndMessageRequest distanceAndMessageRequest3 = DistanceAndMessageRequest.builder()
+                .distance(locationService.calculateDistance(sat3, enemyLocation))
+                .message(msg3)
+                .build();
+
+        Gson gson = new Gson();
+
+        //Then
+        var requestBuilderPost1 =
+                post("/topsecret_split/" + sat1.getName())
+                        .content(gson.toJson(distanceAndMessageRequest1))
+                        .contentType("application/json");
+        this.mockMvc.perform(requestBuilderPost1)
+                .andExpect(status().isOk());
+
+        var requestBuilderPost2 =
+                post("/topsecret_split/" + sat2.getName())
+                        .content(gson.toJson(distanceAndMessageRequest2))
+                        .contentType("application/json");
+        this.mockMvc.perform(requestBuilderPost2)
+                .andExpect(status().isOk());
+
+        var requestBuilderPost3 =
+                post("/topsecret_split/" + sat3.getName())
+                        .content(gson.toJson(distanceAndMessageRequest3))
+                        .contentType("application/json");
+        this.mockMvc.perform(requestBuilderPost3)
+                .andExpect(status().isOk());
+
+
+
+        var requestBuilderGet =
+                get("/topsecret_split");
+
+        this.mockMvc.perform(requestBuilderGet)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.position.x", is(enemyLocation.getX())))
+                .andExpect(jsonPath("$.position.y", is(enemyLocation.getY())))
+                .andExpect(jsonPath("$.message", is(expectedMessage)))
+        ;
+
+    }
+
 }
