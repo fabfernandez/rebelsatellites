@@ -4,7 +4,7 @@ import com.faba.rebelsatellites.model.Location;
 import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import com.faba.rebelsatellites.view.SatellitesRequest;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,6 @@ class ControllerTest {
 
     @Test
     void whenThreeSatellitesArriveThenOk() throws Exception {
-        //build 3 satellites
         Location enemyLocation = Location.builder().x(100).y(100).build();
 
         String expectedMessage = "we are under attack";
@@ -80,14 +79,14 @@ class ControllerTest {
 
         ArrayList<Satellite> satellites = new ArrayList<>(List.of(sat1, sat2, sat3));
 
-        Gson gson = new Gson();
+        SatellitesRequest satellitesRequest = SatellitesRequest.builder().satellites(satellites).build();
 
+        Gson gson = new Gson();
         var requestBuilder =
                 post("/topsecret")
-                        .content(gson.toJson(satellites))
+                        .content(gson.toJson(satellitesRequest))
                         .contentType("application/json");
 
-        //call POST /topsecret and expect location and message
         this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.location.x", is(enemyLocation.getX())))

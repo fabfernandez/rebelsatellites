@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class LocationAndMessage {
+public class LocationAndMessageResponse {
     Location location;
     String message;
 }

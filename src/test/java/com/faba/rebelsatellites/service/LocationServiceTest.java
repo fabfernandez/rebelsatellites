@@ -27,9 +27,10 @@ class LocationServiceTest {
     void only2satellitesFails() {
         Satellite sat1 = Satellite.builder().build();
         Satellite sat2 = Satellite.builder().build();
+        ArrayList<Satellite> satellites = new ArrayList<>(List.of(sat1, sat2));
 
         assertThrows(NotEnoughSatellitesException.class, () -> {
-            locationService.getLocation(new ArrayList<>(List.of(sat1, sat2)));
+            locationService.getLocation(satellites);
         });
     }
 

@@ -1,13 +1,11 @@
 package com.faba.rebelsatellites.controller;
 
-import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
-import com.faba.rebelsatellites.view.LocationAndMessage;
+import com.faba.rebelsatellites.view.LocationAndMessageResponse;
+import com.faba.rebelsatellites.view.SatellitesRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 
 @RestController
 public class RebelSatellitesController {
@@ -27,10 +25,11 @@ public class RebelSatellitesController {
     }
 
     @PostMapping(value = "/topsecret", produces = "application/json")
-    public LocationAndMessage secretTransmission(@RequestBody ArrayList<Satellite> satellites) {
-        return LocationAndMessage.builder()
-                .location(locationService.getLocation(satellites))
-                .message(messageService.getMessage(satellites))
+    public LocationAndMessageResponse secretTransmission(@RequestBody SatellitesRequest satellitesRequest) {
+
+        return LocationAndMessageResponse.builder()
+                .location(locationService.getLocation(satellitesRequest.getSatellites()))
+                .message(messageService.getMessage(satellitesRequest.getSatellites()))
                 .build();
     }
 }
