@@ -1,5 +1,7 @@
 package com.faba.rebelsatellites.controller;
 
+import com.faba.rebelsatellites.model.Satellite;
+import com.faba.rebelsatellites.repository.SatelliteRepository;
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
 import com.faba.rebelsatellites.view.DistanceAndMessageRequest;
@@ -11,13 +13,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class RebelSatellitesController {
 
-    private LocationService locationService;
-    private MessageService messageService;
+    private final LocationService locationService;
+    private final MessageService messageService;
+    private final SatelliteRepository satelliteRepository;
 
     @Autowired
-    public RebelSatellitesController(LocationService locationService, MessageService messageService) {
+    public RebelSatellitesController(LocationService locationService,
+                                     MessageService messageService,
+                                     SatelliteRepository satelliteRepository) {
         this.locationService = locationService;
         this.messageService = messageService;
+        this.satelliteRepository = satelliteRepository;
     }
 
     @GetMapping("/")
@@ -39,17 +45,24 @@ public class RebelSatellitesController {
             @RequestBody DistanceAndMessageRequest distanceAndMessageRequest,
             @PathVariable String satelliteName) {
 
-        locationService.putSplitDistance(satelliteName, distanceAndMessageRequest.getDistance());
-        messageService.putSplitMessage(satelliteName, distanceAndMessageRequest.getMessage());
+        Satellite satellite = Satellite.builder()
+                .name(satelliteName)
+                .message(distanceAndMessageRequest.getMessage())
+                .targetDistance(distanceAndMessageRequest.getDistance())
+                .build();
 
-        return "OK ".concat(satelliteName).concat(" recieved.");
+        satelliteRepository.add(satellite);
+
+        return "OK ".concat(satelliteName).concat(" received.");
     }
 
     @GetMapping(value = "/topsecret_split", produces = "application/json")
     public PositionAndMessageResponse topSecretSplitGet() {
-        return PositionAndMessageResponse.builder()
-                .position(locationService.getBufferedLocation())
-                //.message(messageService.getBufferedMessage())
+        PositionAndMessageResponse response = PositionAndMessageResponse.builder()
+                .position(locationService.getLocation(satelliteRepository.getSatellites()))
+                .message(messageService.getMessage(satelliteRepository.getSatellites()))
                 .build();
+        satelliteRepository.clear();
+        return response;
     }
 }

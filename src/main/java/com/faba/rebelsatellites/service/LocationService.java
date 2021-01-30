@@ -1,38 +1,26 @@
 package com.faba.rebelsatellites.service;
 
-import com.faba.rebelsatellites.exceptions.NotEnoughDataException;
 import com.faba.rebelsatellites.exceptions.NotEnoughSatellitesException;
-import com.faba.rebelsatellites.exceptions.UnknownSatelliteException;
 import com.faba.rebelsatellites.model.Satellite;
 import com.faba.rebelsatellites.model.Location;
-import com.faba.rebelsatellites.enumerable.SatelliteNames;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import com.faba.rebelsatellites.repository.LocationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+
 @Service
 public class LocationService {
-    private static final String KENOBI = SatelliteNames.kenobi.name();
-    private static final String SKYWALKER = SatelliteNames.skywalker.name();
-    private static final String SATO = SatelliteNames.sato.name();
 
-    private static final Map<String, Location> locationDictionary = Map.of(
-            KENOBI, new Location(-500, -200),
-            SKYWALKER, new Location(100, -100),
-            SATO, new Location(500, 100)
-    );
+    private LocationRepository locationRepository;
 
-    private HashMap<String, Double> distanceDictionary =
-            Maps.newHashMap(ImmutableMap.of(
-                    KENOBI, Double.NaN,
-                    SKYWALKER, Double.NaN,
-                    SATO, Double.NaN
-                    )
-            );
+    @Autowired
+    public LocationService(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
 
     public Location getLocation(ArrayList<Satellite> satellites) {
 
@@ -41,19 +29,19 @@ public class LocationService {
 
         Satellite sat0 = satellites.get(0);
         double d0 = sat0.getTargetDistance();
-        Location location0 = getLocationByName(sat0.getName());
+        Location location0 = locationRepository.getLocationByName(sat0.getName());
         double x0 = location0.getX();
         double y0 = location0.getY();
 
         Satellite sat1 = satellites.get(1);
         double d1 = sat1.getTargetDistance();
-        Location location1 = getLocationByName(sat1.getName());
+        Location location1 = locationRepository.getLocationByName(sat1.getName());
         double x1 = location1.getX();
         double y1 = location1.getY();
 
         Satellite sat2 = satellites.get(2);
         double d2 = sat2.getTargetDistance();
-        Location location2 = getLocationByName(sat2.getName());
+        Location location2 = locationRepository.getLocationByName(sat2.getName());
         double x2 = location2.getX();
         double y2 = location2.getY();
 
@@ -74,42 +62,10 @@ public class LocationService {
     }
 
     public double calculateDistance(Satellite satellite, Location enemyLocation) {
-        double distanceOnX = getLocationByName(satellite.getName()).getX() - enemyLocation.getX();
-        double distanceOnY = getLocationByName(satellite.getName()).getY() - enemyLocation.getY();
+        double distanceOnX = locationRepository.getLocationByName(satellite.getName()).getX() - enemyLocation.getX();
+        double distanceOnY = locationRepository.getLocationByName(satellite.getName()).getY() - enemyLocation.getY();
         //Pythagorean theorem
         return Math.sqrt(Math.pow(distanceOnX, 2) + Math.pow(distanceOnY, 2));
-    }
-
-    public void putSplitDistance(String name, Double distance) {
-        distanceDictionary.put(name, distance);
-    }
-
-    public Location getBufferedLocation() {
-        if (distanceDictionary.containsValue(Double.NaN)) {
-            throw new NotEnoughDataException("Not enough data to get the information");
-        }
-
-        Satellite sat1 = Satellite.builder()
-                .name(KENOBI)
-                .targetDistance(distanceDictionary.get(KENOBI)).build();
-        Satellite sat2 = Satellite.builder()
-                .name(SKYWALKER)
-                .targetDistance(distanceDictionary.get(SKYWALKER)).build();
-        Satellite sat3 = Satellite.builder()
-                .name(SATO)
-                .targetDistance(distanceDictionary.get(SATO)).build();
-        ArrayList<Satellite> satellites = new ArrayList<>(List.of(sat1, sat2, sat3));
-
-        return getLocation(satellites);
-    }
-
-    private Location getLocationByName(String name) {
-        String key = name.toLowerCase(Locale.ROOT);
-        if (!locationDictionary.containsKey(key)) {
-            throw new UnknownSatelliteException(String.format("Satellite %s not found", key));
-        }
-
-        return locationDictionary.get(key);
     }
 
     private double calculateTwiceDifference(double a, double b) {

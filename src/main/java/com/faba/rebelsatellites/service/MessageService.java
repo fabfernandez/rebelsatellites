@@ -3,8 +3,6 @@ package com.faba.rebelsatellites.service;
 import com.faba.rebelsatellites.exceptions.EmptyMessagesException;
 import com.faba.rebelsatellites.exceptions.NotEnoughWordsToDecipherMessageException;
 import com.faba.rebelsatellites.model.Satellite;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,14 +13,6 @@ import static java.util.stream.Collectors.toCollection;
 
 @Service
 public class MessageService {
-
-    private HashMap<String, ArrayList<String>> messageDictionary =
-            Maps.newHashMap(ImmutableMap.of(
-                    "kenobi", new ArrayList<>(),
-                    "skywalker", new ArrayList<>(),
-                    "sato", new ArrayList<>()
-                    )
-            );
 
     public String getMessage(ArrayList<Satellite> satellites) {
 
@@ -46,9 +36,6 @@ public class MessageService {
         return buildMessage(messages, msgSize);
     }
 
-    public void putSplitMessage(String satelliteName, ArrayList<String> message) {
-        messageDictionary.put(satelliteName, message);
-    }
 
     private String buildMessage(ArrayList<ArrayList<String>> messages, int msgSize) {
         //At this point we should have lists of the same size inside the nested list.
@@ -114,5 +101,4 @@ public class MessageService {
         }
         return true;
     }
-
 }

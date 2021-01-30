@@ -2,6 +2,8 @@ package com.faba.rebelsatellites.controller;
 
 import com.faba.rebelsatellites.model.Location;
 import com.faba.rebelsatellites.model.Satellite;
+import com.faba.rebelsatellites.repository.LocationRepository;
+import com.faba.rebelsatellites.repository.SatelliteRepository;
 import com.faba.rebelsatellites.service.LocationService;
 import com.faba.rebelsatellites.service.MessageService;
 import com.faba.rebelsatellites.view.DistanceAndMessageRequest;
@@ -24,7 +26,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-@ContextConfiguration(classes = {RebelSatellitesController.class, LocationService.class, MessageService.class})
+@ContextConfiguration(classes = {
+        RebelSatellitesController.class,
+        LocationService.class,
+        MessageService.class,
+        SatelliteRepository.class,
+        LocationRepository.class
+})
 @WebMvcTest
 class ControllerTest {
 
@@ -179,7 +187,6 @@ class ControllerTest {
                         .contentType("application/json");
         this.mockMvc.perform(requestBuilderPost3)
                 .andExpect(status().isOk());
-
 
 
         var requestBuilderGet =
