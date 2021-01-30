@@ -92,7 +92,7 @@ class ControllerTest {
 
         Gson gson = new Gson();
         var requestBuilder =
-                post("/topsecret")
+                post("/topsecret/")
                         .content(gson.toJson(satellitesRequest))
                         .contentType("application/json");
         //Then
@@ -191,7 +191,7 @@ class ControllerTest {
 
 
         var requestBuilderGet =
-                get("/topsecret_split");
+                get("/topsecret_split/");
 
         this.mockMvc.perform(requestBuilderGet)
                 .andExpect(status().isOk())

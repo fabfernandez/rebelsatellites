@@ -31,7 +31,7 @@ public class RebelSatellitesController {
         return "Pong! this API is up and running.";
     }
 
-    @PostMapping(value = "/topsecret", produces = "application/json")
+    @PostMapping(value = "/topsecret/", produces = "application/json")
     public PositionAndMessageResponse topSecretPost(@RequestBody SatellitesRequest satellitesRequest) {
 
         return PositionAndMessageResponse.builder()
@@ -56,7 +56,7 @@ public class RebelSatellitesController {
         return "OK ".concat(satelliteName).concat(" received.");
     }
 
-    @GetMapping(value = "/topsecret_split", produces = "application/json")
+    @GetMapping(value = "/topsecret_split/", produces = "application/json")
     public PositionAndMessageResponse topSecretSplitGet() {
         PositionAndMessageResponse response = PositionAndMessageResponse.builder()
                 .position(locationService.getLocation(satelliteRepository.getSatellites()))
