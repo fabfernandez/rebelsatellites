@@ -133,7 +133,7 @@ Once you posted all 3 satellites, you can perform the GET /topsecret_split/ and 
 
 Errors calculating positions and messages will return a 404 response with a message explaining the error.
 
-For example:
+For example, if you try to GET /topsecret_split/ without sending the 3 satellites first:
 
 ```
 {
@@ -142,5 +142,45 @@ For example:
     "error": "Not Found",
     "message": "Not enough satellites recieved. Minimum is 3.",
     "path": "/topsecret_split/"
+}
+```
+
+## Limitations
+
+1) Message lag is only expected in the beggining of the messages recieved.
+
+For example, this is a complete message with 3 lag spaces in the beggining:
+
+```
+"message": [
+        "",
+        "",
+        "",
+        "hello",
+        "captain",
+        "palpitane"
+    ]
+```
+
+Other types of lag are not supported in this version.
+______________________________
+
+2) The only satellite names supported in this version are:
+
+- kenobi
+- sato
+- skywalker
+
+(This names are case independent in this API.)
+
+Sending other satellite names will result in something like:
+
+```
+{
+    "timestamp": "2021-01-30T21:29:44.486+00:00",
+    "status": 404,
+    "error": "Not Found",
+    "message": "Satellite DARTHVADER not found",
+    "path": "/topsecret/"
 }
 ```
