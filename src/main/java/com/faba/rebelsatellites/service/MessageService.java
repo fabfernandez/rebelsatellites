@@ -21,7 +21,7 @@ public class MessageService {
                         .collect(toCollection(ArrayList::new));
 
         if (messagesAreEmpty(messages)) {
-            throw new EmptyMessagesException("All messages recieved from the satellites are empty.");
+            throw new EmptyMessagesException("All messages received from the satellites are empty.");
         }
         //obtain words that make up the message
         List<String> msgWords = getMsgWords(messages);
@@ -29,11 +29,11 @@ public class MessageService {
         //sort messages by size, ascending order
         messages.sort(Comparator.comparing(List::size));
 
-        int msgSize = messages.get(0).size();
-        //remove message lag based on the shortest msg recieved
-        removeLag(messages, msgSize);
+        int shortestMsgSize = messages.get(0).size();
+        //remove message lag based on the shortest msg received
+        removeLag(messages, shortestMsgSize);
 
-        return buildMessage(messages, msgSize);
+        return buildMessage(messages, shortestMsgSize);
     }
 
 
@@ -43,10 +43,10 @@ public class MessageService {
         String message = "";
 
         for (int elem = 0; elem < msgSize; elem++) {
-            //elem is the position on the string list.
+            //elem is the string list index.
 
             for (int list = 0; list < messages.size(); list++) {
-                //list is the index of the list inside the nested list.
+                //list is the nested list index.
 
                 String word = messages.get(list).get(elem);
 
@@ -65,20 +65,22 @@ public class MessageService {
 
     private List<String> getMsgWords(ArrayList<ArrayList<String>> messages) {
 
-        List<String> listWords = new ArrayList<>();
+        List<String> wordList = new ArrayList<>();
         for (List<String> msg : messages) {
-            listWords = Stream.concat(listWords.stream(), msg.stream())
+            wordList = Stream.concat(wordList.stream(), msg.stream())
                     .distinct()
                     .collect(Collectors.toList());
         }
-        listWords.remove("");
-        return listWords;
+        wordList.remove("");
+        return wordList;
     }
 
-    private void removeLag(ArrayList<ArrayList<String>> messages, int msgSize) {
-        for (int i = 0; i < messages.size(); i++) {
-            int size = messages.get(i).size();
-            messages.set(i, new ArrayList<>(messages.get(i).subList(size - msgSize, size)));
+    private void removeLag(ArrayList<ArrayList<String>> messages, int shortestMsgSize) {
+        for (int msgIndex = 0; msgIndex < messages.size(); msgIndex++) {
+            int size = messages.get(msgIndex).size();
+            messages.set(
+                    msgIndex, new ArrayList<>(messages.get(msgIndex).subList(size - shortestMsgSize, size))
+            );
         }
     }
 
@@ -86,7 +88,7 @@ public class MessageService {
         for (List<String> message : messages) {
             if (message.size() < wordCount) {
                 throw new NotEnoughWordsToDecipherMessageException
-                        ("There isn't enough information in the satellites to dechiper the message");
+                        ("There isn't enough information in the satellites to decipher the message");
             }
         }
     }

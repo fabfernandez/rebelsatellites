@@ -10,14 +10,15 @@ import java.util.Locale;
 
 @Repository
 public class SatelliteRepository {
-
-    enum KnownSatellites {
+    //if there is a new satellite, add it here and put its location in LocationRepository.
+    public enum KnownSatellites {
         KENOBI,
         SKYWALKER,
         SATO
     }
 
     @Getter
+    //Satellites received separately are stored here.
     private final ArrayList<Satellite> satellites = new ArrayList<>();
 
     public void add(Satellite newSatellite) {

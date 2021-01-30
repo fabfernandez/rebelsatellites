@@ -24,7 +24,8 @@ class MessageServiceTest {
     }
 
     @Test
-    void decipherSimpleMessage() {
+    void givenSimpleMessage() {
+        //Given
         String expectedMessage = "this is a secret message";
 
         ArrayList<String> msg1 = new ArrayList<>(
@@ -43,14 +44,15 @@ class MessageServiceTest {
                 List.of(Satellite.builder().message(msg1).build(),
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build()));
-
+        //When
         String message = messageService.getMessage(satellites);
-
+        //Then
         Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
-    void decipherLongMessage() {
+    void givenLongMessage() {
+        //Given
         String expectedMessage = "this is a much longer message hail the empire and the dark lord send more troopers";
 
         ArrayList<String> msg1 = new ArrayList<>(
@@ -71,14 +73,15 @@ class MessageServiceTest {
                 List.of(Satellite.builder().message(msg1).build(),
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build()));
-
+        //When
         String message = messageService.getMessage(satellites);
-
+        //Then
         Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
-    void decipherOneFullMsgAndTwoEmpty() {
+    void givenOneFullMsgAndTwoEmpty() {
+        //Given
         String expectedMessage = "we need to go deeper";
 
         ArrayList<String> msg1 = new ArrayList<>(
@@ -98,14 +101,15 @@ class MessageServiceTest {
                 List.of(Satellite.builder().message(msg1).build(),
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build()));
-
+        //When
         String message = messageService.getMessage(satellites);
-
+        //Then
         Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
-    void decipherOneWordOnEachMsg() {
+    void givenOneWordInEachMessage() {
+        //Given
         String expectedMessage = "send more troopers";
 
         ArrayList<String> msg1 = new ArrayList<>(
@@ -125,14 +129,15 @@ class MessageServiceTest {
                 List.of(Satellite.builder().message(msg1).build(),
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build()));
-
+        //When
         String message = messageService.getMessage(satellites);
-
+        //Then
         Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
-    void decipherWithoutAllTheWordsFails() {
+    void givenMessagesWithMissingWordsThenIsNotEquals() {
+        //Given
         String expectedMessage = "send more troopers";
 
         ArrayList<String> msg1 = new ArrayList<>(
@@ -152,14 +157,15 @@ class MessageServiceTest {
                 List.of(Satellite.builder().message(msg1).build(),
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build()));
-
+        //When
         String message = messageService.getMessage(satellites);
-
+        //Then
         Assertions.assertNotEquals(expectedMessage, message);
     }
 
     @Test
-    void decipherOneEmptyMsgAndTwoIncomplete() {
+    void givenOneEmptyMsgAndTwoIncomplete() {
+        //Given
         String expectedMessage = "we are under attack";
 
         ArrayList<String> msg1 = new ArrayList<>(
@@ -179,14 +185,15 @@ class MessageServiceTest {
                 List.of(Satellite.builder().message(msg1).build(),
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build()));
-
+        //When
         String message = messageService.getMessage(satellites);
-
+        //Then
         Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
-    void decipherFromFourSources() {
+    void givenMessagesFromFourSources() {
+        //Given
         String expectedMessage = "we are under attack help";
 
         ArrayList<String> msg1 = new ArrayList<>(
@@ -211,14 +218,15 @@ class MessageServiceTest {
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build(),
                         Satellite.builder().message(msg4).build()));
-
+        //When
         String message = messageService.getMessage(satellites);
-
+        //Then
         Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
-    void decipherFromFiveSources() {
+    void givenMessagesFromFiveSources() {
+        //Given
         String expectedMessage = "we are under attack help";
 
         ArrayList<String> msg1 = new ArrayList<>(
@@ -249,15 +257,15 @@ class MessageServiceTest {
                         Satellite.builder().message(msg4).build(),
                         Satellite.builder().message(msg5).build()
                 ));
-
+        //When
         String message = messageService.getMessage(satellites);
-
+        //Then
         Assertions.assertEquals(expectedMessage, message);
     }
 
     @Test
-    void whenAllMessagesAreEmptyExceptionIsThrown() {
-
+    void givenAllMessagesEmptyThenExceptionIsThrown() {
+        //Given
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("", "", "", "", "", "",
                         "", "", "", "")
@@ -275,13 +283,13 @@ class MessageServiceTest {
                 List.of(Satellite.builder().message(msg1).build(),
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build()));
-
+        //Then
         assertThrows(EmptyMessagesException.class, () -> messageService.getMessage(satellites));
     }
 
     @Test
-    void whenOneMessageIsShorterThanTheAmountOfWordsFoundExceptionIsThrown() {
-
+    void givenOneMessageShorterThanTheAmountOfWordsFoundThenExceptionIsThrown() {
+        //Given
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("this", "are", "many", "words", "more", "than", "expected", "yeah")
         );
@@ -296,7 +304,7 @@ class MessageServiceTest {
                 List.of(Satellite.builder().message(msg1).build(),
                         Satellite.builder().message(msg2).build(),
                         Satellite.builder().message(msg3).build()));
-
+        //Then
         assertThrows(NotEnoughWordsToDecipherMessageException.class, () -> messageService.getMessage(satellites));
     }
 

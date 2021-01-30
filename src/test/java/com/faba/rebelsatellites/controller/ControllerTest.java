@@ -52,10 +52,10 @@ class ControllerTest {
 
     @Test
     void whenThreeSatellitesArriveThenOk() throws Exception {
+        //Given
         Location enemyLocation = Location.builder().x(100).y(100).build();
-
         String expectedMessage = "we are under attack";
-
+        //When
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("", "", "", "", "", "",  //lag
                         "we", "", "", "attack")
@@ -69,19 +69,19 @@ class ControllerTest {
                         "", "are", "under", "")
         );
         Satellite sat1 = Satellite.builder()
-                .name("kenobi")
+                .name(SatelliteRepository.KnownSatellites.KENOBI.name())
                 .message(msg1)
                 .build();
         sat1.setTargetDistance(locationService.calculateDistance(sat1, enemyLocation));
 
         Satellite sat2 = Satellite.builder()
-                .name("sato")
+                .name(SatelliteRepository.KnownSatellites.SATO.name())
                 .message(msg2)
                 .build();
         sat2.setTargetDistance(locationService.calculateDistance(sat2, enemyLocation));
 
         Satellite sat3 = Satellite.builder()
-                .name("skywalker")
+                .name(SatelliteRepository.KnownSatellites.SKYWALKER.name())
                 .message(msg3)
                 .build();
         sat3.setTargetDistance(locationService.calculateDistance(sat3, enemyLocation));
@@ -95,7 +95,7 @@ class ControllerTest {
                 post("/topsecret")
                         .content(gson.toJson(satellitesRequest))
                         .contentType("application/json");
-
+        //Then
         this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.position.x", is(enemyLocation.getX())))
@@ -106,14 +106,15 @@ class ControllerTest {
 
     @Test
     void oneSatellitePosts() throws Exception {
+        //Given
         Location enemyLocation = Location.builder().x(100).y(100).build();
-
+        //When
         ArrayList<String> msg1 = new ArrayList<>(
                 List.of("", "", "", "", "", "",  //lag
                         "we", "", "", "attack")
         );
         Satellite sat1 = Satellite.builder()
-                .name("kenobi")
+                .name(SatelliteRepository.KnownSatellites.KENOBI.name())
                 .build();
 
         DistanceAndMessageRequest distanceAndMessageRequest = DistanceAndMessageRequest.builder()
@@ -126,7 +127,7 @@ class ControllerTest {
                 post("/topsecret_split/" + sat1.getName())
                         .content(gson.toJson(distanceAndMessageRequest))
                         .contentType("application/json");
-
+        //Then
         this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk());
     }
@@ -145,9 +146,9 @@ class ControllerTest {
         ArrayList<String> msg3 = new ArrayList<>(
                 List.of("", "", "", "", "", "", "", "", "", "", "", "", "are", "under", ""));
 
-        Satellite sat1 = Satellite.builder().name("kenobi").build();
-        Satellite sat2 = Satellite.builder().name("sato").build();
-        Satellite sat3 = Satellite.builder().name("skywalker").build();
+        Satellite sat1 = Satellite.builder().name(SatelliteRepository.KnownSatellites.KENOBI.name()).build();
+        Satellite sat2 = Satellite.builder().name(SatelliteRepository.KnownSatellites.SATO.name()).build();
+        Satellite sat3 = Satellite.builder().name(SatelliteRepository.KnownSatellites.SKYWALKER.name()).build();
 
         DistanceAndMessageRequest distanceAndMessageRequest1 = DistanceAndMessageRequest.builder()
                 .distance(locationService.calculateDistance(sat1, enemyLocation))

@@ -11,6 +11,8 @@ import java.util.Map;
 @Repository
 public class LocationRepository {
 
+    //this is where locations are stored. We only have our satellite's location stored here for now.
+
     private static final Map<String, Location> locationDictionary = Map.of(
             KnownSatellites.KENOBI.name(), new Location(-500, -200),
             KnownSatellites.SKYWALKER.name(), new Location(100, -100),

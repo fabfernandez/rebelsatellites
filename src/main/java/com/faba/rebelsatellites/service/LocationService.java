@@ -15,9 +15,10 @@ import java.util.*;
 @Service
 public class LocationService {
 
-    private LocationRepository locationRepository;
+    private final LocationRepository locationRepository;
 
     @Autowired
+
     public LocationService(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }

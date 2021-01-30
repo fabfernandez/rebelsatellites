@@ -28,7 +28,7 @@ public class RebelSatellitesController {
 
     @GetMapping("/")
     public String ping() {
-        return "Pong! API is up and running.";
+        return "Pong! this API is up and running.";
     }
 
     @PostMapping(value = "/topsecret", produces = "application/json")
